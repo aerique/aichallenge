@@ -398,10 +398,16 @@ class Asteroids(Game):
                 distance = sqrt((dx * dx) + (dy * dy))
                 category = asteroid["category"]
                 asteroid_radius = (category + 1) * (category + 1)
-                radius_to_check = 5  # ship's hit bubble = 5
-                if asteroid_radius > radius_to_check:
-                    radius_to_check = asteroid_radius
-                if distance <= radius_to_check:
+
+                ### hmmm, i think this is wrong..
+                #~ radius_to_check = 5  # ship's hit bubble = 5
+                #~ if asteroid_radius > radius_to_check:
+                    #~ radius_to_check = asteroid_radius
+                #~ if distance <= radius_to_check:
+                
+                ### instead, collide, when the bubbles touch!
+                ship_radius = 5  # ship's hit bubble = 5
+                if distance <= asteroid_radius + ship_radius:
                     self.score[ship["player_id"]] -= 1
                     ships_to_kill.append(ship)
                     break
