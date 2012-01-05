@@ -670,5 +670,7 @@ class Asteroids(Game):
         replay['cutoff'] =  self.cutoff
         
         ### 
+        replay['width'] = self.width
+        replay['height'] = self.height
         replay['data'] = self.replay_data
         return replay

@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
@@ -7,7 +5,9 @@
 	<title>Asteroids!!</title>
 	<style type="text/css">
 		html { margin:0; padding:0; }
-		body { margin:0; padding:0; overflow:hidden; }
+		body { margin:0; padding:0; overflow:hidden; background-color:#444}
+		a { color:#777 }
+		a:hover { color:#ddd }
 	</style>
 </head>
 <body>
@@ -17,24 +17,63 @@
 	<script type="text/javascript">
 		replay_data = ## REPLAY PLACEHOLDER ##;
 		
+		im = {
+			"p0" : "visualizer/p0.png",
+			"p1" : "visualizer/p1.png",
+			"a0" : "visualizer/a0.png",
+			"a1" : "visualizer/a1.png",
+			"a2" : "visualizer/a2.png",
+			"a3" : "visualizer/a3.png",
+			"a4" : "visualizer/a2.png",
+			"b"  : "visualizer/b.png",
+		}
 		C = document.getElementById('C')
 		V = C.getContext('2d');
 		the_turn = 0
-		
-		function clear() {
-			V.fillStyle = 'red'
-			V.fillRect(0,0,600,600)
-		}
 		function init() {
+			width = replay_data["replaydata"]["width"]
+			height = replay_data["replaydata"]["height"]
 			nturns = replay_data["replaydata"]["data"].length
+			sx = 600 / width
+			sy = 600 / height
+			for ( i in im ) {
+				s = im[i]
+				im[i] = new Image()
+				im[i].src = s
+			}
 			play()
+		}
+		function clear() {
+			V.fillStyle = 'black'
+			V.fillRect(0,0,600,600)
 		}
 		function draw_frame(f) {
 			clear()
 			frame = replay_data["replaydata"]["data"][f]
-			V.fillStyle = 'black'
+			V.fillStyle = 'white'
 			for (i in frame) {
-				V.fillText(frame[i][0], parseInt(frame[i][2]),parseInt(frame[i][3]))
+				x = frame[i][2] * sx
+				y = frame[i][3] * sy
+				if ( frame[i][0] == "p" )
+				{
+					img = "p" + frame[i][1]
+					r = frame[i][6]
+				}
+				if ( frame[i][0] == "a" )
+				{
+					img = "a" + frame[i][1]
+					r = frame[i][5]
+				}
+				if ( frame[i][0] == "b" )
+				{
+					img = "b" 
+					r = 0
+				}
+				V.rotate(r)
+				V.fillText(frame[i][0], x,y)
+				if ( im[img] && im[img].data )
+					V.drawImage(im[img], x,y)
+				V.rotate(-r)
 			}
 		}
         function stop() {
@@ -49,7 +88,7 @@
         }
         function forw() {
             stop()
-            if ( the_turn < nturns ) 
+            if ( the_turn < nturns-1 ) 
                 the_turn += 1
             draw_frame(the_turn)
         }
@@ -80,6 +119,5 @@
 	<a href='javascript:forw()'>&gt;</a>&nbsp;
 	<a href='javascript:pos(nturns-1)'>&gt;&gt;</a>&nbsp;
 </div>
-
 </body>
 </html>
