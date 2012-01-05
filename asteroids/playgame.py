@@ -13,6 +13,7 @@ try:
 except ImportError:
     from io import StringIO
 
+import visualizer.visualize_locally
 from asteroids import Asteroids
 
 sys.path.append("../worker")
