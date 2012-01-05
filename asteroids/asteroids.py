@@ -494,6 +494,9 @@ class Asteroids(Game):
     def start_game(self):
         """ Called by engine at the start of the game """
         self.game_started = True
+        
+        ### append turn 0 to replay
+        self.replay_data.append( self.get_state_changes() )
 
     def finish_game(self):
         """ Called by engine at the end of the game """
