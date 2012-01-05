@@ -85,6 +85,9 @@ class Asteroids(Game):
         # the engine may kill players before the game starts and this is needed
         # to prevent errors
         self.orders = [[] for i in range(self.num_players)]
+        
+        ### collect turns for the replay
+        self.replay_data = []
 
     def parse_map(self, map_text):
         """ Parse the map_text into a more friendly data structure """
@@ -395,10 +398,16 @@ class Asteroids(Game):
                 distance = sqrt((dx * dx) + (dy * dy))
                 category = asteroid["category"]
                 asteroid_radius = (category + 1) * (category + 1)
-                radius_to_check = 5  # ship's hit bubble = 5
-                if asteroid_radius > radius_to_check:
-                    radius_to_check = asteroid_radius
-                if distance <= radius_to_check:
+
+                ### hmmm, i think this is wrong..
+                #~ radius_to_check = 5  # ship's hit bubble = 5
+                #~ if asteroid_radius > radius_to_check:
+                    #~ radius_to_check = asteroid_radius
+                #~ if distance <= radius_to_check:
+                
+                ### instead, collide, when the bubbles touch!
+                ship_radius = 5  # ship's hit bubble = 5
+                if distance <= asteroid_radius + ship_radius:
                     self.score[ship["player_id"]] -= 1
                     ships_to_kill.append(ship)
                     break
@@ -491,6 +500,9 @@ class Asteroids(Game):
     def start_game(self):
         """ Called by engine at the start of the game """
         self.game_started = True
+        
+        ### append turn 0 to replay
+        self.replay_data.append( self.get_state_changes() )
 
     def finish_game(self):
         """ Called by engine at the end of the game """
@@ -528,6 +540,9 @@ class Asteroids(Game):
                 self.score_history[i].extend([last_score]*(self.turn-score_len))
                 self.score_history[i].append(s)
         self.calc_significant_turns()
+
+        ### append turn to replay
+        self.replay_data.append( self.get_state_changes() )
 
     def calc_significant_turns(self):
         ranking_bots = [sorted(self.score, reverse=True).index(x) for x in self.score]
@@ -662,5 +677,9 @@ class Asteroids(Game):
         replay['winning_turn'] = self.winning_turn
         replay['ranking_turn'] = self.ranking_turn
         replay['cutoff'] =  self.cutoff
-
+        
+        ### 
+        replay['width'] = self.width
+        replay['height'] = self.height
+        replay['data'] = self.replay_data
         return replay

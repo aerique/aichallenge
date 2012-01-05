@@ -328,6 +328,10 @@ def run_game(game, botcmds, options):
             game_result['errors'] = [head.headtail() for head in error_logs]
 
     if replay_log:
+        ### monkey patch to limit float presicion to 3 digits ;(
+        from json import encoder
+        encoder.FLOAT_REPR = lambda o: format(o, '.3f')
+        
         json.dump(game_result, replay_log, sort_keys=True)
 
     return game_result
