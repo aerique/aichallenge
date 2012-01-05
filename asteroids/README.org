@@ -37,6 +37,9 @@ Once out of beta the following features could be added:
 
 * What Should Be Done Next
 
+*note:* I just merged a pull request from berak which addresses the
+first two points.
+
 1. =playgame.py= needs to output a proper replay file.
 1. A visualizer needs to be made that can visualize the replay file,
    the current =bot-input2avi.sbcl= script is much too slow for proper
