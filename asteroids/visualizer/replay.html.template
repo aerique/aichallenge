@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
@@ -14,14 +16,70 @@
 <canvas width=600 height=600 id="C">
 	<script type="text/javascript">
 		replay_data = ## REPLAY PLACEHOLDER ##;
-		function init() {
-			C = document.getElementById('C')
-			V = C.getContext('2d');
+		
+		C = document.getElementById('C')
+		V = C.getContext('2d');
+		the_turn = 0
+		
+		function clear() {
 			V.fillStyle = 'red'
-			V.fillRect(0,0,500,500)
+			V.fillRect(0,0,600,600)
 		}
+		function init() {
+			nturns = replay_data["replaydata"]["data"].length
+			play()
+		}
+		function draw_frame(f) {
+			clear()
+			frame = replay_data["replaydata"]["data"][f]
+			V.fillStyle = 'black'
+			for (i in frame) {
+				V.fillText(frame[i][0], parseInt(frame[i][2]),parseInt(frame[i][3]))
+			}
+		}
+        function stop() {
+            clearInterval(tick)
+            tick=-1
+        }
+        function back() {
+            stop()
+            if ( the_turn > 0 ) 
+                the_turn -= 1
+            draw_frame(the_turn)
+        }
+        function forw() {
+            stop()
+            if ( the_turn < nturns ) 
+                the_turn += 1
+            draw_frame(the_turn)
+        }
+        function pos(t) {
+            stop()
+            the_turn = t
+            draw_frame(the_turn)
+        }
+        function play() {
+            tick = setInterval( function() {
+                if (the_turn < nturns)
+                {
+                    draw_frame(the_turn)
+                    the_turn += 1
+                } else {
+                    stop()
+                }
+            },200)
+        }
 		init()
 	</script>
 </canvas>
+<div>
+	<a href='javascript:pos(0)'>&lt;&lt;</a>&nbsp;
+	<a href='javascript:back()'>&lt;</a>&nbsp;
+	<a href='javascript:stop()'>stop</a>&nbsp;
+	<a href='javascript:play()'>play</a>&nbsp;
+	<a href='javascript:forw()'>&gt;</a>&nbsp;
+	<a href='javascript:pos(nturns-1)'>&gt;&gt;</a>&nbsp;
+</div>
+
 </body>
 </html>
