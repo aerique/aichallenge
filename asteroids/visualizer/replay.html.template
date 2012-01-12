@@ -31,6 +31,16 @@
 		C = document.getElementById('C')
 		V = C.getContext('2d');
 		the_turn = 0
+		var color = new Array(9);
+		color[0] = 'cyan';
+		color[1] = 'green';
+		color[2] = 'blue';
+		color[3] = 'yellow';
+		color[4] = 'red';
+		color[5] = 'magenta';
+		color[6] = 'darkgray';
+		color[7] = 'purple';
+		color[8] = 'white';
 		function init() {
 			width  = replay_data["replaydata"]["width"]
 			height = replay_data["replaydata"]["height"]
@@ -64,16 +74,24 @@
 			info += "]"
 			V.fillText(info, 260,10)
 			for (i in frame) {
+				var index = frame[i][1];
+				if (frame[i][0] == 'a')
+					index = 8;
+				V.fillStyle = color[index]
+				V.strokeStyle = color[index]
 				img = frame[i][0] + frame[i][1]
 				x = frame[i][2] * sx
 				y = frame[i][3] * sy
-				a = frame[i][4] //* Math.PI / 180
+				a = frame[i][4]
+				end_arc = (frame[i][0]=="p" ? (frame[i][4] - (Math.PI * 2 / 3)): 0 )
+				begin_arc = (frame[i][0]=="p" ? (frame[i][4] + (Math.PI * 2 / 3)): Math.PI * 2 )
+	
 				r = (frame[i][0]=="b" ? 2 :(frame[i][0]=="p" ? 5 : (frame[i][1]+1)*(frame[i][1]+1)))
 				//~ V.rotate(r)
 				//~ V.translate(x,y)
 				V.fillText(img, x,y)
 				V.beginPath();
-				V.arc(x,y, r*sx,0,Math.PI*2,true);
+				V.arc(x,y, r*sx,begin_arc,end_arc,true);
 				V.closePath();
 				V.stroke();
 				//~ V.translate(-x,-y)
